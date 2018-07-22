@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 app.use(express.static('public'));
 
 app.use('/onlinekhabar/:year/:month/:id', function(req, res){
@@ -31,4 +33,4 @@ app.get('/data', function(req, res){
 });
 
 
-app.listen(3000);
+app.listen(PORT);
