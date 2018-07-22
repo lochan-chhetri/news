@@ -55,9 +55,14 @@ const generateHTML = (data) => {
 
 }
 
+var position = 0;
+
 const showMore = (data, target) => {
     var el = target.getElementsByClassName('detailContainer')[0];
+
     if(el.className.indexOf('collapsed') !== -1 ){
+        position = target.offsetTop;
+
         el.className = el.className.replace(/collapsed/,'expanded');
         if(el.innerHTML === '') {
             
@@ -101,6 +106,7 @@ const showMore = (data, target) => {
             
         }
     } else if(el.className.indexOf('expanded') !== -1){
+        window.scrollTo(0, position - 10);
         el.className = el.className.replace(/expanded/,'collapsed');
     }
 }
