@@ -18,9 +18,13 @@ const getDetails = (urlObj) => {
 
     rp(onlinekhabar)
         .then(function ($) {
-
+            article.content = [];
             article.title = $('h1').text(); 
-            article.content = $('.ok-single-content').children('p').text();
+            
+            $('.ok-single-content').children('p').each( (i, el) => {
+                article.content[i] = $(el).text();
+            });
+
             article.date = $('.updated_date').text().trim();
             article.link = onlinekhabar.uri;
         })

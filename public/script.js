@@ -13,11 +13,11 @@ fetch('/data')
 const generateHTML = (data) => {
     let container = document.getElementById('root');
     
-    let sourceHead = document.createElement('h2');
-    let newsSource = document.createTextNode(data.source);
+    // let sourceHead = document.createElement('h2');
+    // let newsSource = document.createTextNode(data.source);
     
-    sourceHead.appendChild(newsSource);
-    container.appendChild(sourceHead);
+    // sourceHead.appendChild(newsSource);
+    // container.appendChild(sourceHead);
     let list = document.createElement('ul');
     
     data.headlines.forEach( item => {            
@@ -60,11 +60,14 @@ const showMore = (data, target) => {
     if(el.className.indexOf('collapsed') !== -1 ){
         el.className = el.className.replace(/collapsed/,'expanded');
         if(el.innerHTML === '') {
-            let container = document.createElement('p');
-            let content = document.createTextNode(data.content);
-            container.appendChild(content);
-            el.appendChild(container);
-
+            
+            data.content.forEach( para => {
+                let container = document.createElement('p');
+                let content = document.createTextNode(para);
+                container.appendChild(content);
+                el.appendChild(container);    
+            });
+            
             let date = document.createElement('p');
             let dateContent = document.createTextNode(data.date);
             let dateClass = document.createAttribute('class');
@@ -74,7 +77,7 @@ const showMore = (data, target) => {
             el.appendChild(date);
 
             let link = document.createElement('a');
-            let linkContent = document.createTextNode('Link to news');
+            let linkContent = document.createTextNode('Source');
             let href = document.createAttribute('href');
             href.value = data.link;
             link.setAttributeNode(href);
