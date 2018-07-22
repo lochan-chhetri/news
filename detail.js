@@ -22,7 +22,13 @@ const getDetails = (urlObj) => {
             article.title = $('h1').text(); 
             
             $('.ok-single-content').children('p').each( (i, el) => {
-                article.content[i] = $(el).text();
+                article.content[i] = { text: $(el).text(), images: [] };
+                if($(el).find('img').length) {
+                    
+                    $(el).find('img').each( (i, image) => {
+                        article.content[i].images.push($(image).attr('src'));
+                    });
+                }
             });
 
             article.date = $('.updated_date').text().trim();

@@ -61,13 +61,6 @@ const showMore = (data, target) => {
         el.className = el.className.replace(/collapsed/,'expanded');
         if(el.innerHTML === '') {
             
-            data.content.forEach( para => {
-                let container = document.createElement('p');
-                let content = document.createTextNode(para);
-                container.appendChild(content);
-                el.appendChild(container);    
-            });
-            
             let date = document.createElement('p');
             let dateContent = document.createTextNode(data.date);
             let dateClass = document.createAttribute('class');
@@ -76,6 +69,27 @@ const showMore = (data, target) => {
             date.appendChild(dateContent);
             el.appendChild(date);
 
+            data.content.forEach( para => {
+                
+
+
+                let container = document.createElement('p');
+                let content = document.createTextNode(para.text);
+                
+                para.images.forEach( image => {
+                    let img = document.createElement('img');
+                    let src = document.createAttribute('src');
+                    src.value = image;
+
+                    img.setAttributeNode(src);
+                    el.appendChild(img);    
+                });
+                
+                
+                container.appendChild(content);
+                el.appendChild(container);
+            });
+            
             let link = document.createElement('a');
             let linkContent = document.createTextNode('Source');
             let href = document.createAttribute('href');
@@ -84,6 +98,7 @@ const showMore = (data, target) => {
             
             link.appendChild(linkContent);
             el.appendChild(link);
+            
         }
     } else if(el.className.indexOf('expanded') !== -1){
         el.className = el.className.replace(/expanded/,'collapsed');
