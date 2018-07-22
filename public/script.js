@@ -31,7 +31,7 @@ const generateHTML = (data) => {
 
         let detailClass = document.createAttribute('class');
         detailClass.value = 'detail';
-        anchor.setAttributeNode(detailClass);
+        listItem.setAttributeNode(detailClass);
 
         // let target = document.createAttribute('target');
         // target.value = '_blank';
@@ -56,7 +56,7 @@ const generateHTML = (data) => {
 }
 
 const showMore = (data, target) => {
-    var el = target.nextSibling;
+    var el = target.getElementsByClassName('detailContainer')[0];
     if(el.className.indexOf('collapsed') !== -1 ){
         el.className = el.className.replace(/collapsed/,'expanded');
         if(el.innerHTML === '') {
@@ -109,26 +109,26 @@ const eventHandlers = () => {
     
     const detailClasses = document.getElementsByClassName('detail');
     
-    function getDetailNews(evt) {
+    function getDetailNews(target) {
         
-        fetch(evt.target.attributes.href.value)
+        fetch(target.getElementsByTagName('a')[0].href)
             .then( response => {
                 return response.json();
             })
             .then( data => {
-                showMore(data, evt.target);
+                showMore(data, target);
             })
             .catch( err => { return console.log('ERROR', err) })
             }
 
     for (var i = 0; i < detailClasses.length; i++) {
         detailClasses[i].addEventListener('click', function(evt) {
-            if(evt.target.nextSibling.innerHTML === '') {
+            if(evt.currentTarget.getElementsByClassName('detailContainer')[0].innerHTML === '') {
                 evt.preventDefault();
-                getDetailNews(evt);
+                getDetailNews(evt.currentTarget);
             } else {
                 evt.preventDefault();
-                showMore({}, evt.target);
+                showMore({}, evt.currentTarget);
             }
         }, false);
     }
