@@ -29,6 +29,24 @@ const generateHTML = (data) => {
         link.value = item.link;
         anchor.setAttributeNode(link);
 
+
+        let spinner = document.createElement('div');
+        let spinnerClass = document.createAttribute('class');
+        spinnerClass.value = 'lds-ellipsis hide';
+        spinner.setAttributeNode(spinnerClass);
+
+        let spinner1 = document.createElement('div');
+        spinner.appendChild(spinner1);
+
+        let spinner2 = document.createElement('div');
+        spinner.appendChild(spinner2);
+
+        let spinner3 = document.createElement('div');
+        spinner.appendChild(spinner3);
+
+        let spinner4 = document.createElement('div');
+        spinner.appendChild(spinner4);
+
         let detailClass = document.createAttribute('class');
         detailClass.value = 'detail';
         listItem.setAttributeNode(detailClass);
@@ -45,6 +63,8 @@ const generateHTML = (data) => {
         
         anchor.appendChild(content);
         listItem.appendChild(anchor);
+        listItem.appendChild(spinner);
+
         listItem.appendChild(detailContainer);
 
         list.appendChild(listItem);
@@ -55,14 +75,13 @@ const generateHTML = (data) => {
 
 }
 
-var position = 0;
+// var position = 0;
 
 const showMore = (data, target) => {
     var el = target.getElementsByClassName('detailContainer')[0];
 
     if(el.className.indexOf('collapsed') !== -1 ){
-        position = target.offsetTop;
-
+        // position = target.offsetTop;
         el.className = el.className.replace(/collapsed/,'expanded');
         if(el.innerHTML === '') {
             
@@ -75,9 +94,6 @@ const showMore = (data, target) => {
             el.appendChild(date);
 
             data.content.forEach( para => {
-                
-
-
                 let container = document.createElement('p');
                 let content = document.createTextNode(para.text);
                 
@@ -98,15 +114,23 @@ const showMore = (data, target) => {
             let link = document.createElement('a');
             let linkContent = document.createTextNode('Source');
             let href = document.createAttribute('href');
+            let linkClass = document.createAttribute('class');
+            linkClass.value = 'source';
+            link.setAttributeNode(linkClass);
+
             href.value = data.link;
             link.setAttributeNode(href);
             
             link.appendChild(linkContent);
             el.appendChild(link);
+
+            link.addEventListener('click', function(evt) {
+                evt.stopPropagation();
+            } )
             
         }
     } else if(el.className.indexOf('expanded') !== -1){
-        window.scrollTo(0, position - 10);
+        // window.scrollTo(0, position - 10);
         el.className = el.className.replace(/expanded/,'collapsed');
     }
 }
@@ -122,6 +146,7 @@ const eventHandlers = () => {
                 return response.json();
             })
             .then( data => {
+                target.getElementsByClassName('lds-ellipsis')[0].attributes.class.value = 'lds-ellipsis hide';
                 showMore(data, target);
             })
             .catch( err => { return console.log('ERROR', err) })
@@ -130,6 +155,8 @@ const eventHandlers = () => {
     for (var i = 0; i < detailClasses.length; i++) {
         detailClasses[i].addEventListener('click', function(evt) {
             if(evt.currentTarget.getElementsByClassName('detailContainer')[0].innerHTML === '') {
+                evt.currentTarget.getElementsByClassName('lds-ellipsis')[0].attributes.class.value = 'lds-ellipsis';
+                // el.previousElementSibling.className = el.previousElementSibling.className.replace(/hide/,'show')
                 evt.preventDefault();
                 getDetailNews(evt.currentTarget);
             } else {
@@ -138,6 +165,10 @@ const eventHandlers = () => {
             }
         }, false);
     }
+
+
     
 }
+
+
 
