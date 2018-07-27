@@ -33,7 +33,7 @@ const generateHTML = (data) => {
 
     let showMore = document.createElement('a');
     let showMoreId = document.createAttribute('id');
-    let showMoreContent = document.createTextNode('Show More');
+    let showMoreContent = document.createTextNode('अझै');
     showMore.appendChild(showMoreContent);
     let showMoreHref = document.createAttribute('href');
     showMoreHref.value = '/data/' + (data.current + data.perpage);
@@ -190,14 +190,14 @@ const eventHandlers = () => {
     document.getElementById('showMore').addEventListener('click', (evt) => {
         const currentTarget = evt.currentTarget;
         evt.preventDefault();
-        currentTarget.innerText = 'Loading ...';
+        currentTarget.innerText = '...';
 
         fetch(currentTarget.attributes.href.value)
         .then( response => {
             return response.json();
         })
         .then( data => {
-            currentTarget.innerText = 'Show More';
+            currentTarget.innerText = 'अझै';
             if( data.current > data.total ) {
                 currentTarget.className = "hide";
             } else {
