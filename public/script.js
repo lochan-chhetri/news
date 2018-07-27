@@ -19,9 +19,34 @@ const generateHTML = (data) => {
     // sourceHead.appendChild(newsSource);
     // container.appendChild(sourceHead);
     let list = document.createElement('ul');
+    let listId = document.createAttribute('id');
+    listId.value = 'list';
+    list.setAttributeNode(listId);
     
     data.headlines.forEach( item => {            
-        let listItem = document.createElement('li');
+        var listItem = generateListItem(item);
+        list.appendChild(listItem);
+        
+    });
+
+
+
+    let showMore = document.createElement('a');
+    let showMoreId = document.createAttribute('id');
+    let showMoreContent = document.createTextNode('Show More');
+    showMore.appendChild(showMoreContent);
+    let showMoreHref = document.createAttribute('href');
+    showMoreHref.value = '/data/' + (data.current + data.perpage);
+    showMoreId.value = 'showMore';
+    showMore.setAttributeNode(showMoreId);
+    showMore.setAttributeNode(showMoreHref);
+
+    container.appendChild(list);
+    container.appendChild(showMore);
+}
+
+const generateListItem = (item) => {
+    let listItem = document.createElement('li');
         let anchor = document.createElement('a');
         let content = document.createTextNode(item.title);
         
@@ -67,17 +92,12 @@ const generateHTML = (data) => {
 
         listItem.appendChild(detailContainer);
 
-        list.appendChild(listItem);
-        
-    });
-
-    container.appendChild(list);
-
-}
+        return listItem;
+};
 
 // var position = 0;
 
-const showMore = (data, target) => {
+const detail = (data, target) => {
     var el = target.getElementsByClassName('detailContainer')[0];
 
     if(el.className.indexOf('collapsed') !== -1 ){
@@ -147,26 +167,51 @@ const eventHandlers = () => {
             })
             .then( data => {
                 target.getElementsByClassName('lds-ellipsis')[0].attributes.class.value = 'lds-ellipsis hide';
-                showMore(data, target);
+                detail(data, target);
             })
             .catch( err => { return console.log('ERROR', err) })
             }
 
     for (var i = 0; i < detailClasses.length; i++) {
         detailClasses[i].addEventListener('click', function(evt) {
-            if(evt.currentTarget.getElementsByClassName('detailContainer')[0].innerHTML === '') {
-                evt.currentTarget.getElementsByClassName('lds-ellipsis')[0].attributes.class.value = 'lds-ellipsis';
-                // el.previousElementSibling.className = el.previousElementSibling.className.replace(/hide/,'show')
-                evt.preventDefault();
-                getDetailNews(evt.currentTarget);
-            } else {
-                evt.preventDefault();
-                showMore({}, evt.currentTarget);
-            }
-        }, false);
+            evt.preventDefault();
+                if(evt.currentTarget.getElementsByClassName('detailContainer')[0].innerHTML === '') {
+                    evt.currentTarget.getElementsByClassName('lds-ellipsis')[0].attributes.class.value = 'lds-ellipsis';
+                    // el.previousElementSibling.className = el.previousElementSibling.className.replace(/hide/,'show')
+                    evt.preventDefault();
+                    getDetailNews(evt.currentTarget);
+                } else {
+                    evt.preventDefault();
+                    detail({}, evt.currentTarget);
+                }
+        });
     }
 
+    document.getElementById('showMore').addEventListener('click', (evt) => {
+        const currentTarget = evt.currentTarget;
+        evt.preventDefault();
+        currentTarget.innerText = 'Loading ...';
 
+        fetch(currentTarget.attributes.href.value)
+        .then( response => {
+            return response.json();
+        })
+        .then( data => {
+            currentTarget.innerText = 'Show More';
+            if( data.current > data.total ) {
+                currentTarget.className = "hide";
+            } else {
+                currentTarget.attributes.href.value = '/data/' + (data.current + data.perpage);
+            }
+            
+            data.headlines.forEach( item => {            
+                var listItem = generateListItem(item);
+                document.getElementById('list').appendChild(listItem);
+            });
+            
+        })
+            .catch( err => { return console.log('ERROR', err) })
+        });
     
 }
 
