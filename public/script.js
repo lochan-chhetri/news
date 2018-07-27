@@ -207,6 +207,20 @@ const eventHandlers = () => {
             data.headlines.forEach( item => {            
                 var listItem = generateListItem(item);
                 document.getElementById('list').appendChild(listItem);
+                
+                // TODO: optimize this. this is repeat code from above event listener
+                listItem.addEventListener('click', function(evt) {
+                    
+                    evt.preventDefault();
+                        if(evt.currentTarget.getElementsByClassName('detailContainer')[0].innerHTML === '') {
+                            evt.currentTarget.getElementsByClassName('lds-ellipsis')[0].attributes.class.value = 'lds-ellipsis';
+                            evt.preventDefault();
+                            getDetailNews(evt.currentTarget);
+                        } else {
+                            evt.preventDefault();
+                            detail({}, evt.currentTarget);
+                        }
+                });
             });
             
         })
